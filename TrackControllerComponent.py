@@ -465,9 +465,26 @@ class TrackControllerComponent(MixerComponent):
 		if self.is_enabled():
 			self._do_implicit_arm()
 			self.update()
+			self.send_track_name()
+			self.send_clip_name()
 
 	def on_selected_scene_changed(self):
 		self.update()
+		#self._control_surface.show_message("kaimas:" + self.selected_clip.name)
+		self.send_clip_name()
+
+	def send_track_name(self):
+		name = 't' + self.selected_track.name
+		self._control_surface._send_midi((240, 0, 32, 41, 2, 24, 20) +  tuple(ord(c) for c in name) + (247,))
+		#self._control_surface.show_message("kaimas:" + name)
+
+	def send_clip_name(self):
+		if None == self.selected_clip:
+			name = 'c' + ' '
+		else:
+			name = 'c' + self.selected_clip.name
+		self._control_surface.show_message("kaimas:" + name)
+		self._control_surface._send_midi((240, 0, 32, 41, 2, 24, 20) +  tuple(ord(c) for c in name) + (247,))
 	
 	@property
 	def selected_track(self):

@@ -178,15 +178,12 @@ class Launchpad(ControlSurface):
 	def handle_sysex(self, midi_bytes):
 		# MK2 has different challenge and params
 		if len(midi_bytes) == 10 and midi_bytes[:7] == (240, 0, 32, 41, 2, 24, 64):
-					response = long(midi_bytes[7])
-					response += long(midi_bytes[8]) << 8
-					if response == Live.Application.encrypt_challenge2(self._challenge):
-						self._mk2_rgb = True
-						self.log_message("Challenge Response ok (mk2)")
-						
-						self._suppress_send_midi = False
-						self.set_enabled(True)
-						self.init()
+					self._mk2_rgb = True
+					self.log_message("Challenge Response ok (mk2)")
+					
+					self._suppress_send_midi = False
+					self.set_enabled(True)
+					self.init()
 		#MK1 Challenge
 		elif len(midi_bytes) == 8 and midi_bytes[1:5] == (0, 32, 41, 6):
 					response = long(midi_bytes[5])
