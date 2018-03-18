@@ -1,8 +1,0 @@
-Launchpad95g : Launchpad95 ableton script with additional functionality for midi-grid controller
-
-This script is edited specifically to work with midi-grid DIY controller, so it's not likely to function properly with any of Novation Launchpad controllers.
-
-Changes over original Launchpad95 script:
--does not check result of device challenge
--transmits names of current Track and Clip over SysEx MIDI messages, so this info could be displayed on controller's LCD screen
-
