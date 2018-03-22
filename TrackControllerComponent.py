@@ -1,6 +1,7 @@
 
 from _Framework.MixerComponent import MixerComponent
 from _Framework.ButtonElement import ButtonElement
+from StatusTransmitter import StatusTransmitter
 import time
 
 
@@ -26,6 +27,8 @@ class TrackControllerComponent(MixerComponent):
 		self._undo_button = None
 		self._arm_button = None
 		self._control_surface = control_surface
+		# has to be created early, so Attribute exceptions would not occur in on_track change defs
+		self._status_transmitter = StatusTransmitter(self._control_surface)
 		self._implicit_arm = implicit_arm
 		self._skin_name = skin_name
 		MixerComponent.__init__(self, 1)
@@ -465,26 +468,19 @@ class TrackControllerComponent(MixerComponent):
 		if self.is_enabled():
 			self._do_implicit_arm()
 			self.update()
-			self.send_track_name()
+			self._status_transmitter.send_track_name(self.selected_track.name)
 			self.send_clip_name()
 
 	def on_selected_scene_changed(self):
 		self.update()
-		#self._control_surface.show_message("kaimas:" + self.selected_clip.name)
 		self.send_clip_name()
-
-	def send_track_name(self):
-		name = 't' + self.selected_track.name
-		self._control_surface._send_midi((240, 0, 32, 41, 2, 24, 20) +  tuple(ord(c) for c in name) + (247,))
-		#self._control_surface.show_message("kaimas:" + name)
 
 	def send_clip_name(self):
 		if None == self.selected_clip:
-			name = 'c' + ' '
+			name = ' '
 		else:
-			name = 'c' + self.selected_clip.name
-		self._control_surface.show_message("kaimas:" + name)
-		self._control_surface._send_midi((240, 0, 32, 41, 2, 24, 20) +  tuple(ord(c) for c in name) + (247,))
+			name = self.selected_clip.name
+		self._status_transmitter.send_clip_name(name)
 	
 	@property
 	def selected_track(self):
