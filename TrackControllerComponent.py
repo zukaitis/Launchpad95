@@ -29,6 +29,8 @@ class TrackControllerComponent(MixerComponent):
 		self._control_surface = control_surface
 		# has to be created early, so Attribute exceptions would not occur in on_track change defs
 		self._status_transmitter = StatusTransmitter(self._control_surface)
+		self._current_track = None
+		self._current_clip_slot = None
 		self._implicit_arm = implicit_arm
 		self._skin_name = skin_name
 		MixerComponent.__init__(self, 1)
@@ -469,19 +471,43 @@ class TrackControllerComponent(MixerComponent):
 			self._do_implicit_arm()
 			self.update()
 			self._status_transmitter.send_track_name(self.selected_track.name)
-			self.send_clip_name()
+			if None != self._current_track:
+				self._current_track.remove_name_listener(self.on_current_track_name_changed)
+			self._current_track = self.song().view.selected_track
+			self._current_track.add_name_listener(self.on_current_track_name_changed)
+			self.on_selected_clip_slot_changed()
+
+	def on_current_track_name_changed(self):
+		self._status_transmitter.send_track_name(self.selected_track.name)
+		self._control_surface.show_message("kaimas1")
 
 	def on_selected_scene_changed(self):
 		self.update()
-		self.send_clip_name()
+		self.on_selected_clip_slot_changed()
 
-	def send_clip_name(self):
-		if None == self.selected_clip:
-			name = ' '
+	def on_selected_clip_slot_changed(self):
+		if None != self._current_clip_slot:
+			if self._current_clip_slot.has_clip_has_listener:
+				self._current_clip_slot.remove_has_clip_listener(self.on_current_clip_slot_has_clip_changed)
+			if self._current_clip_slot.has_clip:
+				if self._current_clip_slot.clip.name_has_listener:
+					self._current_clip_slot.clip.remove_name_listener(self.on_current_clip_name_changed)
+		self._current_clip_slot = self.selected_clip_slot
+		if self._current_clip_slot.has_clip:
+			self._current_clip_slot.clip.add_name_listener(self.on_current_clip_name_changed)
+			name = self._current_clip_slot.clip.name
 		else:
-			name = self.selected_clip.name
+			self._current_clip_slot.add_has_clip_listener(self.on_current_clip_slot_has_clip_changed)
+			name = ' '
 		self._status_transmitter.send_clip_name(name)
-	
+
+	def on_current_clip_slot_has_clip_changed(self):
+		if self._current_clip_slot.has_clip:
+			self._current_clip_slot.clip.add_name_listener(self.on_current_clip_name_changed)
+
+	def on_current_clip_name_changed(self):
+		self._status_transmitter.send_clip_name(self._current_clip_slot.clip.name)
+
 	@property
 	def selected_track(self):
 		return self.song().view.selected_track
@@ -506,3 +532,6 @@ class TrackControllerComponent(MixerComponent):
 		else:
 			return None
 
+	@property
+	def selected_clip_slot(self):
+		return self.selected_scene.clip_slots[self.selected_track_idx]

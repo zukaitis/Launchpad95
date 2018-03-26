@@ -1,6 +1,7 @@
 from _Framework.DeviceComponent import DeviceComponent as LiveDeviceComponent
 from _Framework.ButtonElement import ButtonElement
 from DeviceControllerStrip import DeviceControllerStrip
+from StatusTransmitter import StatusTransmitter
 import time
 import Live
 
@@ -10,10 +11,14 @@ class DeviceComponent(LiveDeviceComponent):
 
 	def __init__(self, control_surface = None, name = "device_component", is_enabled = False, matrix = None, side_buttons = None, top_buttons = None):
 		self._control_surface = control_surface
+		# has to be created early, so Attribute exceptions would not occur in on_track change defs
+		self._status_transmitter = StatusTransmitter(self._control_surface)
+		self._current_device = None
+		self._current_track = None
 		self.name = name
 		self._device = None
 		self._matrix = matrix
-		self._selected_track = None		
+		self._selected_track = None
 		
 		#Track navigation buttons
 		self._prev_track_button = None
@@ -212,6 +217,23 @@ class DeviceComponent(LiveDeviceComponent):
 			self._device = device
 			self.set_device_view()
 			LiveDeviceComponent.set_device(self, device)
+
+			if None != self._current_device:
+				self._current_device.remove_name_listener(self.on_current_device_name_changed)
+			self._current_device = device
+			self._current_device.add_name_listener(self.on_current_device_name_changed)
+			if None != self._current_track:
+				self._current_track.remove_name_listener(self.on_current_track_name_changed)
+			self._current_track = self.song().view.selected_track
+			self._current_track.add_name_listener(self.on_current_track_name_changed)
+			self._status_transmitter.send_device_name(self._current_device.name)
+			self._status_transmitter.send_track_name(self._current_track.name)
+
+	def on_current_device_name_changed(self):
+		self._status_transmitter.send_device_name(self._current_device.name)
+
+	def on_current_track_name_changed(self):
+		self._status_transmitter.send_track_name(self._current_track.name)
 
 	def set_device_view(self):
 		view = self.application().view

@@ -3,7 +3,6 @@ from _Framework.ControlSurface import ControlSurface
 class StatusTransmitter(object):
 	def __init__(self, control_surface = None):
 		self._control_surface = control_surface
-		self._control_surface.show_message("zdrw for ve JUS")
 
 	def send_track_name(self, name):
 		name = 't' + name
