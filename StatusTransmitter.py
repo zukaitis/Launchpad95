@@ -28,14 +28,13 @@ class StatusTransmitter(object):
 	def send_track_name(self, name):
 		name = 't' + name
 		self.transmit_string(name)
-		#self._control_surface.show_message("kaimas:" + name)
 
-	@debounce(0.3)
+	@debounce(0.2)
 	def send_clip_name(self, name):
 		name = 'c' + name
 		self.transmit_string(name)
 
-	@debounce(0.3)
+	@debounce(0.2)
 	def send_device_name(self, name):
 		name = 'd' + name
 		self.transmit_string(name)
@@ -60,5 +59,5 @@ class StatusTransmitter(object):
 
 	def transmit_string(self, str):
 		self._control_surface._send_midi((240, 0, 32, 41, 2, 24, 20) + tuple(ord(c) for c in str) + (247,))
-		self._control_surface.show_message("kaimas:" + str)
+		#self._control_surface.show_message("debug:" + str)
 

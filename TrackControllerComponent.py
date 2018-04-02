@@ -479,7 +479,6 @@ class TrackControllerComponent(MixerComponent):
 
 	def on_current_track_name_changed(self):
 		self._status_transmitter.send_track_name(self.selected_track.name)
-		self._control_surface.show_message("kaimas1")
 
 	def on_selected_scene_changed(self):
 		self.update()
@@ -488,7 +487,10 @@ class TrackControllerComponent(MixerComponent):
 	def on_selected_clip_slot_changed(self):
 		if None != self._current_clip_slot:
 			if self._current_clip_slot.has_clip_has_listener:
-				self._current_clip_slot.remove_has_clip_listener(self.on_current_clip_slot_has_clip_changed)
+				try: # "Observer not connected" error used to occur here, this will temporarily fix it
+					self._current_clip_slot.remove_has_clip_listener(self.on_current_clip_slot_has_clip_changed)
+				except RuntimeError:
+					pass
 			if self._current_clip_slot.has_clip:
 				if self._current_clip_slot.clip.name_has_listener:
 					self._current_clip_slot.clip.remove_name_listener(self.on_current_clip_name_changed)
