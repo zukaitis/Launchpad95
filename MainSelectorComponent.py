@@ -12,6 +12,7 @@ from StepSequencerComponent import StepSequencerComponent
 from StepSequencerComponent2 import StepSequencerComponent2
 import Settings
 from NoteRepeatComponent import NoteRepeatComponent
+from StatusTransmitter import StatusTransmitter
 
 class MainSelectorComponent(ModeSelectorComponent):
 
@@ -98,6 +99,26 @@ class MainSelectorComponent(ModeSelectorComponent):
 
 		self._init_session()
 		self._all_buttons = tuple(self._all_buttons)
+
+		self._status_transmitter = StatusTransmitter(self._control_surface)
+
+		self.song().add_is_playing_listener(self.on_status_change)
+		self.song().add_record_mode_listener(self.on_status_change)
+		self.song().add_session_record_listener(self.on_status_change)
+		self.song().add_tempo_listener(self.on_timing_change)
+		self.song().add_signature_numerator_listener(self.on_timing_change)
+		self.song().add_signature_denominator_listener(self.on_timing_change)
+		self.song().add_nudge_down_listener(self.on_timing_change)
+		self.song().add_nudge_up_listener(self.on_timing_change)
+
+		self.on_timing_change() #transmit initial tempo
+
+	def on_status_change(self):
+		self._status_transmitter.send_status(self.song().is_playing, self.song().record_mode, self.song().session_record)
+
+	def on_timing_change(self):
+		self._status_transmitter.send_timing(self.song().tempo, self.song().signature_numerator,
+			self.song().signature_denominator, self.song().nudge_down, self.song().nudge_up)
 
 	def disconnect(self):
 		for button in self._modes_buttons:
