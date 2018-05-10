@@ -745,7 +745,7 @@ class StepSequencerComponent(CompoundComponent):
 # SET FUNCTIONS
     def _set_mode_function(self): #Change the resolution of the sequencer
         self._mode_button = None
-        self.set_mode_button(self._side_buttons[3]) #SndB
+        self.set_mode_button(self._side_buttons[4]) #SndB #Switched
         self._last_mode_button_press = time.time()
         self._number_of_lines_per_note = 1
 
@@ -755,13 +755,13 @@ class StepSequencerComponent(CompoundComponent):
         self._last_lock_button_press = time.time()
         self._long_press = 0.5
         self._lock_button = None
-        self.set_lock_button(self._side_buttons[1])#Pan
+        self.set_lock_button(self._side_buttons[7])#Pan #Switched
         self._selected_track = None
             
     def _set_mute_shift_function(self): #Allow to mute notes in the grid or all notes if selecting on Note Selector #FIX bad behavior
         self._mute_shift_button = None
         self._last_mute_shift_button_press = time.time()
-        self.set_mute_shift_button(self._side_buttons[7])#Arm
+        self.set_mute_shift_button(self._side_buttons[6])#Arm #Switched
         self._is_mute_shifted = False
 
     def _set_quantization_function(self):
@@ -769,7 +769,7 @@ class StepSequencerComponent(CompoundComponent):
         self.set_quantization(QUANTIZATION_MAP[self._quantization_index])
         self._quantization_button = None
         self._last_quantize_button_press = time.time()
-        self.set_quantization_button(self._side_buttons[2])#SndA
+        self.set_quantization_button(self._side_buttons[1])#SndA #Switched
 
     # Set 4x4 lower right matrix section that manages the loop range OK
     def _set_loop_selector(self):
@@ -786,7 +786,7 @@ class StepSequencerComponent(CompoundComponent):
     #Display page indicator for multinote mode    
     def _set_note_editor(self): 
         self._note_editor = self.register_component(NoteEditorComponent(self, self._matrix, self._control_surface))
-        self._note_editor.set_velocity_button(self._side_buttons[6])#Solo 
+        self._note_editor.set_velocity_button(self._side_buttons[5])#Solo #Switched
 
     #Set 4x4 lower left matrix section that allows note selection in Normal Mode
     def _set_note_selector(self):
@@ -797,8 +797,8 @@ class StepSequencerComponent(CompoundComponent):
             self._matrix.get_button(0, 4), self._matrix.get_button(1, 4), self._matrix.get_button(2, 4), self._matrix.get_button(3, 4)],
             self._control_surface)
             )
-        self._note_selector.set_up_button(self._side_buttons[4])#Stop
-        self._note_selector.set_down_button(self._side_buttons[5])#Trk On
+        self._note_selector.set_up_button(self._side_buttons[2])#Stop #Switched
+        self._note_selector.set_down_button(self._side_buttons[3])#Trk On #Switched
 
     def _set_track_controller(self):#Navigation buttons
         self._track_controller = self.register_component(TrackControllerComponent(self._control_surface, implicit_arm = False))

@@ -39,7 +39,7 @@ class StatusTransmitter(object):
 		name = 'd' + name
 		self.transmit_string(name)
 
-	@debounce(0.2)
+	@debounce(0.1)
 	def send_status(self, is_playing, is_recording, is_session_recording):
 		status_string = 's'
 		status_string += 'P' if is_playing else '-'

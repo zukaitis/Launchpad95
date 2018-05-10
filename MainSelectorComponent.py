@@ -145,13 +145,17 @@ class MainSelectorComponent(ModeSelectorComponent):
 		assert mode in range(self.number_of_modes()) # 8 for this script
 		if self._main_mode_index == mode:
 			if self._main_mode_index == 1: #user mode 1 and device controller and instrument mode
-				self._sub_mode_list[self._main_mode_index] = (self._sub_mode_list[self._main_mode_index] + 1) % 3
+				# temporarily disabling user modes
+				self._sub_mode_list[self._main_mode_index] = (self._sub_mode_list[self._main_mode_index] + 1) % 2 #3
 				self.update()
 			elif self._main_mode_index == 2: #user mode 2  and step sequencer
-				self._sub_mode_list[self._main_mode_index] = (self._sub_mode_list[self._main_mode_index] + 1) % 3
+				# temporarily disabling user modes
+				self._sub_mode_list[self._main_mode_index] = (self._sub_mode_list[self._main_mode_index] + 1) % 2 #3
 				self.update()
 			elif self._main_mode_index == 3: #Mixer mode
 				self.update()
+				self.on_status_change()  # mixer mode is currently used as a default mode
+				self.on_timing_change()  # timing and status are resent when entering this mode
 			else: #Session mode
 				self._sub_mode_list[self._main_mode_index] = 0
 				self._mode_index = 0

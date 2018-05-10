@@ -72,12 +72,12 @@ class DeviceComponent(LiveDeviceComponent):
 			self.set_on_off_button(side_buttons[0])
 
 			# bank nav buttons
-			self.set_bank_nav_buttons(side_buttons[1], side_buttons[2])
-			self._prev_bank_button = side_buttons[1]
-			self._next_bank_button = side_buttons[2]
+			self.set_bank_nav_buttons(side_buttons[2], side_buttons[3]) #Switched
+			self._prev_bank_button = side_buttons[2] #Switched
+			self._next_bank_button = side_buttons[3] #Switched
 			
 			# precision
-			self.set_precision_button(side_buttons[3])
+			self.set_precision_button(side_buttons[1]) #Switched
 		
 			# lock buttons
 			self.set_lock_button1(side_buttons[4])

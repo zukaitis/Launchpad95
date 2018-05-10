@@ -74,25 +74,25 @@ class MelodicNoteEditorComponent(ControlSurfaceComponent):
 
 		# buttons
 		self._random_button = None
-		self.set_random_button(self._side_buttons[3])
+		self.set_random_button(self._side_buttons[2]) #Switched
 
 		self._mode_notes_lengths_button = None
-		self.set_mode_notes_lengths_button(self._side_buttons[4])
+		self.set_mode_notes_lengths_button(self._side_buttons[3]) #Switched
 		self._is_notes_lengths_shifted = False
 		self._last_notes_lengths_button_press = time.time()
 
 		self._mode_notes_octaves_button = None
-		self.set_mode_notes_octaves_button(self._side_buttons[5])
+		self.set_mode_notes_octaves_button(self._side_buttons[4]) #Switched
 		self._is_octave_shifted = False
 		self._last_notes_octaves_button_press = time.time()
 
 		self._mode_notes_velocities_button = None
-		self.set_mode_notes_velocities_button(self._side_buttons[6])
+		self.set_mode_notes_velocities_button(self._side_buttons[5]) #Switched
 		self._is_notes_velocity_shifted = False
 		self._last_notes_velocity_button_press = time.time()
 
 		self._mode_notes_pitches_button = None
-		self.set_mode_notes_pitches_button(self._side_buttons[7])
+		self.set_mode_notes_pitches_button(self._side_buttons[6]) #Switched
 		self._is_notes_pitches_shifted = False
 		self._last_notes_pitches_button_press = time.time()
 
