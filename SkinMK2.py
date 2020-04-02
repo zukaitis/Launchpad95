@@ -36,6 +36,9 @@ class Colors:
 		class Mixer:
 			On = Rgb.MINT
 			Off = Rgb.MINT_THIRD
+		class Track: #??
+			On = Rgb.MINT
+			Off = Rgb.MINT_THIRD
 	
 	class Session:
 		#scene
@@ -189,7 +192,8 @@ class Colors:
 			Velocity0 = Rgb.GREEN_THIRD
 			Velocity1 = Rgb.GREEN_HALF
 			Velocity2 = Rgb.GREEN
-			Velocity3 = Rgb.GREEN_THIRD
+			Velocity3 = Rgb.AMBER_HALF
+			Velocity4 = Rgb.AMBER
 			Muted = Rgb.DARK_GREY
 			Playing = Rgb.RED
 			Metronome = Rgb.BLUE
