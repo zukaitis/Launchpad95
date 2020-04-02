@@ -189,11 +189,8 @@ class Launchpad(ControlSurface):
 			# launchpad mk2 needs disconnect string sent
 			self._send_midi((240, 0, 32, 41, 2, 24, 64, 247))
 		if self._config_button != None:
-			self._config_button.send_value(32)#Send enable flashing led config message to LP
-			self._config_button.send_value(0)
 			self._config_button = None
 		if self._user_byte_write_button != None:
-			self._user_byte_write_button.send_value(0)
 			self._user_byte_write_button = None
 
 	def _combine_active_instances():
