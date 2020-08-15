@@ -470,15 +470,17 @@ class TrackControllerComponent(MixerComponent):
 		if self.is_enabled():
 			self._do_implicit_arm()
 			self.update()
-			self._status_transmitter.send_track_name(self.selected_track.name)
+			self._status_transmitter.send_track_info(self.selected_track.name, self.selected_track.color)
 			if None != self._current_track:
-				self._current_track.remove_name_listener(self.on_current_track_name_changed)
+				self._current_track.remove_name_listener(self.on_current_track_changed)
+				self._current_track.remove_color_listener(self.on_current_track_changed)
 			self._current_track = self.song().view.selected_track
-			self._current_track.add_name_listener(self.on_current_track_name_changed)
+			self._current_track.add_name_listener(self.on_current_track_changed)
+			self._current_track.add_color_listener(self.on_current_track_changed)
 			self.on_selected_clip_slot_changed()
 
-	def on_current_track_name_changed(self):
-		self._status_transmitter.send_track_name(self.selected_track.name)
+	def on_current_track_changed(self):
+		self._status_transmitter.send_track_info(self.selected_track.name, self.selected_track.color)
 
 	def on_selected_scene_changed(self):
 		self.update()
@@ -493,22 +495,33 @@ class TrackControllerComponent(MixerComponent):
 					pass
 			if self._current_clip_slot.has_clip:
 				if self._current_clip_slot.clip.name_has_listener:
-					self._current_clip_slot.clip.remove_name_listener(self.on_current_clip_name_changed)
+					self._current_clip_slot.clip.remove_name_listener(self.on_current_clip_changed)
+				if self._current_clip_slot.clip.color_has_listener:
+					self._current_clip_slot.clip.remove_color_listener(self.on_current_clip_changed)
+				if self._current_clip_slot.clip.playing_status_has_listener:
+					self._current_clip_slot.clip.remove_playing_status_listener(self.on_current_clip_changed)
 		self._current_clip_slot = self.selected_clip_slot
+		
 		if self._current_clip_slot.has_clip:
-			self._current_clip_slot.clip.add_name_listener(self.on_current_clip_name_changed)
-			name = self._current_clip_slot.clip.name
+			self._current_clip_slot.clip.add_name_listener(self.on_current_clip_changed)
+			self._current_clip_slot.clip.add_color_listener(self.on_current_clip_changed)
+			self._current_clip_slot.clip.add_playing_status_listener(self.on_current_clip_changed)
+			self.on_current_clip_changed()
 		else:
 			self._current_clip_slot.add_has_clip_listener(self.on_current_clip_slot_has_clip_changed)
-			name = ' '
-		self._status_transmitter.send_clip_name(name)
+			self._status_transmitter.send_clip_info_no_clip()
 
 	def on_current_clip_slot_has_clip_changed(self):
 		if self._current_clip_slot.has_clip:
-			self._current_clip_slot.clip.add_name_listener(self.on_current_clip_name_changed)
+			self._current_clip_slot.clip.add_name_listener(self.on_current_clip_changed)
+			self._current_clip_slot.clip.add_color_listener(self.on_current_clip_changed)
+			self._current_clip_slot.clip.add_playing_status_listener(self.on_current_clip_changed)
+			self.on_current_clip_changed()
+		else:
+			self._status_transmitter.send_clip_info_no_clip()
 
-	def on_current_clip_name_changed(self):
-		self._status_transmitter.send_clip_name(self._current_clip_slot.clip.name)
+	def on_current_clip_changed(self):
+		self._status_transmitter.send_clip_info(self._current_clip_slot.clip.name, self._current_clip_slot.clip.color, self._current_clip_slot.clip.is_playing)
 
 	@property
 	def selected_track(self):

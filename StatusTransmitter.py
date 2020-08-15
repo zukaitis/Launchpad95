@@ -25,14 +25,18 @@ class StatusTransmitter(object):
 		self._control_surface = control_surface
 
 	@debounce(0.1)
-	def send_track_name(self, name):
-		name = 't' + name
-		self.transmit_string(name)
+	def send_track_info(self, name, color):
+		track_info = 't' + name + '|' + '{:08d}'.format(color)
+		self.transmit_string(track_info)
 
 	@debounce(0.2)
-	def send_clip_name(self, name):
-		name = 'c' + name
-		self.transmit_string(name)
+	def send_clip_info(self, name, color, is_playing):
+		clip_info = 'c' + name + '|' + '{:08d}'.format(color) + ('P' if is_playing else '-')
+		self.transmit_string(clip_info)
+
+	@debounce(0.2)
+	def send_clip_info_no_clip(self):
+		self.transmit_string('c')
 
 	@debounce(0.2)
 	def send_device_name(self, name):

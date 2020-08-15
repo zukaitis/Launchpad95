@@ -223,17 +223,19 @@ class DeviceComponent(LiveDeviceComponent):
 			self._current_device = device
 			self._current_device.add_name_listener(self.on_current_device_name_changed)
 			if None != self._current_track:
-				self._current_track.remove_name_listener(self.on_current_track_name_changed)
+				self._current_track.remove_name_listener(self.on_current_track_changed)
+				self._current_track.remove_color_listener(self.on_current_track_changed)
 			self._current_track = self.song().view.selected_track
-			self._current_track.add_name_listener(self.on_current_track_name_changed)
+			self._current_track.add_name_listener(self.on_current_track_changed)
+			self._current_track.add_color_listener(self.on_current_track_changed)
 			self._status_transmitter.send_device_name(self._current_device.name)
-			self._status_transmitter.send_track_name(self._current_track.name)
+			self._status_transmitter.send_track_info(self._current_track.name, self._current_track.color)
 
 	def on_current_device_name_changed(self):
 		self._status_transmitter.send_device_name(self._current_device.name)
 
-	def on_current_track_name_changed(self):
-		self._status_transmitter.send_track_name(self._current_track.name)
+	def on_current_track_changed(self):
+		self._status_transmitter.send_track_info(self._current_track.name, self._current_track.color)
 
 	def set_device_view(self):
 		view = self.application().view
